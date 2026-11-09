@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaquinha Solidária — Ajude os Animais do Refúgio Esperança</title>
+    <meta name="description" content="Vaquinha para ajudar os animais do Refúgio Esperança em São Paulo. Doe via Pix e ajude a salvar vidas.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #333; line-height: 1.6; }
+        .container { max-width: 680px; margin: 0 auto; padding: 20px; }
+        
+        /* Header */
+        .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 40px 30px; text-align: center; color: white; margin-bottom: 24px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); }
+        .hero h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; position: relative; }
+        .hero p { font-size: 16px; opacity: 0.9; position: relative; }
+        .hero .badge { display: inline-block; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 6px 16px; border-radius: 20px; font-size: 13px; margin-top: 12px; position: relative; }
+        
+        /* Progress */
+        .progress-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 24px; }
+        .progress-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+        .progress-raised { font-size: 32px; font-weight: 800; color: #667eea; }
+        .progress-goal { font-size: 14px; color: #888; }
+        .progress-bar { width: 100%; height: 12px; background: #e9ecef; border-radius: 6px; overflow: hidden; margin-bottom: 12px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 6px; transition: width 1s ease; }
+        .progress-stats { display: flex; justify-content: space-between; font-size: 13px; color: #666; }
+        .progress-stats span { display: flex; align-items: center; gap: 4px; }
+        
+        /* Pix Section */
+        .pix-card { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 24px; text-align: center; }
+        .pix-card h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+        .pix-card .subtitle { font-size: 14px; color: #888; margin-bottom: 20px; }
+        .pix-amounts { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+        .pix-btn { padding: 12px 24px; border: 2px solid #667eea; border-radius: 12px; background: white; color: #667eea; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .pix-btn:hover, .pix-btn.active { background: #667eea; color: white; }
+        .pix-custom { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; }
+        .pix-custom input { padding: 12px 16px; border: 2px solid #e9ecef; border-radius: 12px; font-size: 16px; width: 160px; text-align: center; }
+        .pix-custom input:focus { outline: none; border-color: #667eea; }
+        .pix-copy-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .pix-copy-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102,126,234,0.4); }
+        .pix-code { margin-top: 16px; padding: 16px; background: #f8f9fa; border-radius: 12px; font-family: 'Courier New', monospace; font-size: 12px; word-break: break-all; color: #555; display: none; }
+        .pix-code.show { display: block; }
+        .pix-instruction { margin-top: 12px; font-size: 13px; color: #888; }
+        
+        /* QR Code */
+        .qr-section { margin-top: 20px; padding: 20px; background: #f0f4ff; border-radius: 12px; display: none; }
+        .qr-section.show { display: block; }
+        .qr-placeholder { width: 180px; height: 180px; margin: 0 auto 12px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #aaa; border: 2px dashed #ccc; }
+        
+        /* Story */
+        .story-card { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 24px; }
+        .story-card h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+        .story-card p { font-size: 15px; color: #555; margin-bottom: 12px; }
+        .story-img { width: 100%; height: 200px; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border-radius: 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; font-size: 48px; }
+        
+        /* Donors */
+        .donors-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 24px; }
+        .donors-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+        .donor { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+        .donor:last-child { border-bottom: none; }
+        .donor-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; }
+        .donor-info { flex: 1; }
+        .donor-name { font-size: 14px; font-weight: 600; }
+        .donor-time { font-size: 12px; color: #aaa; }
+        .donor-amount { font-size: 14px; font-weight: 700; color: #667eea; }
+        
+        /* Trust */
+        .trust-bar { display: flex; justify-content: center; gap: 24px; padding: 20px; background: white; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .trust-item { text-align: center; font-size: 12px; color: #888; }
+        .trust-item .icon { font-size: 24px; margin-bottom: 4px; }
+        
+        /* Footer */
+        .footer { text-align: center; padding: 20px; font-size: 12px; color: #aaa; }
+        .footer a { color: #667eea; text-decoration: none; }
+        
+        /* Toast */
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #333; color: white; padding: 12px 24px; border-radius: 8px; font-size: 14px; transition: transform 0.3s ease; z-index: 1000; }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        
+        @media (max-width: 480px) {
+            .hero { padding: 30px 20px; }
+            .hero h1 { font-size: 22px; }
+            .progress-raised { font-size: 26px; }
+            .pix-amounts { gap: 8px; }
+            .pix-btn { padding: 10px 18px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero -->
+        <div class="hero">
+            <h1>🐾 Refúgio Esperança</h1>
+            <p>Ajude os animais resgatados em São Paulo a ter uma segunda chance</p>
+            <div class="badge">✓ Vaquinha verificada • Pix instantâneo</div>
+        </div>
+        
+        <!-- Progress -->
+        <div class="progress-card">
+            <div class="progress-header">
+                <span class="progress-raised" id="raised">R$ 3.847</span>
+                <span class="progress-goal">de R$ 10.000</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 38%"></div>
+            </div>
+            <div class="progress-stats">
+                <span>👥 <strong id="donorCount">47</strong> doadores</span>
+                <span>⏱️ Restam <strong>12 dias</strong></span>
+                <span>📊 <strong>38%</strong> da meta</span>
+            </div>
+        </div>
+        
+        <!-- Pix -->
+        <div class="pix-card">
+            <h2>Faça sua doação via Pix</h2>
+            <p class="subtitle">Escolha um valor ou digite o seu</p>
+            
+            <div class="pix-amounts">
+                <button class="pix-btn" onclick="selectAmount(10)">R$ 10</button>
+                <button class="pix-btn active" onclick="selectAmount(25)">R$ 25</button>
+                <button class="pix-btn" onclick="selectAmount(50)">R$ 50</button>
+                <button class="pix-btn" onclick="selectAmount(100)">R$ 100</button>
+                <button class="pix-btn" onclick="selectAmount(250)">R$ 250</button>
+            </div>
+            
+            <div class="pix-custom">
+                <input type="number" id="customAmount" placeholder="Outro valor" min="1" oninput="customInput(this.value)">
+            </div>
+            
+            <button class="pix-copy-btn" onclick="copyPix()">
+                📋 Copiar código Pix
+            </button>
+            
+            <p class="pix-instruction">
+                Abra o app do seu banco → Pix → Copiar e Colar → Cole o código → Confirme
+            </p>
+            
+            <div class="qr-section" id="qrSection">
+                <div class="qr-placeholder">QR Code Pix<br>(gerado no app do banco)</div>
+                <p style="font-size:13px;color:#666;">Ou use o código copiado acima</p>
+            </div>
+            
+            <div class="pix-code" id="pixCode"></div>
+        </div>
+        
+        <!-- Trust -->
+        <div class="trust-bar">
+            <div class="trust-item"><div class="icon">🔒</div>Transação segura</div>
+            <div class="trust-item"><div class="icon">⚡</div>Pix instantâneo</div>
+            <div class="trust-item"><div class="icon">📄</div>Recibo automático</div>
+            <div class="trust-item"><div class="icon">🏛️</div>CNPJ ativo</div>
+        </div>
+        
+        <!-- Story -->
+        <div class="story-card">
+            <h2>Nossa história</h2>
+            <div class="story-img">🐕🐈🐕‍🦺</div>
+            <p>O Refúgio Esperança é um projeto sem fins lucrativos que atua desde 2022 no bairro de Perus, na zona norte de São Paulo. Resgatamos animais abandonados e maltratados, oferecendo tratamento veterinário, castração, vacinação e busca por adoção responsável.</p>
+            <p>Nos últimos 3 meses, resgatamos <strong>34 cães</strong> e <strong>19 gatos</strong>. Com o aumento do inverno, a demanda por ração, medicamentos e abrigo térmico triplicou. Esta vaquinha vai garantir que nenhum animal passe frio nesta estação.</p>
+            <p><strong>Para onde vai seu dinheiro:</strong></p>
+            <p>• 60% — Ração e alimentação<br>• 25% — Tratamento veterinário e medicamentos<br>• 10% — Abrigo térmico (cobertores, mantas)<br>• 5% — Custos operacionais</p>
+        </div>
+        
+        <!-- Recent Donors -->
+        <div class="donors-card">
+            <h3>Doações recentes</h3>
+            <div class="donor">
+                <div class="donor-avatar">M</div>
+                <div class="donor-info">
+                    <div class="donor-name">Mariana S.</div>
+                    <div class="donor-time">há 2 horas</div>
+                </div>
+                <div class="donor-amount">R$ 50</div>
+            </div>
+            <div class="donor">
+                <div class="donor-avatar">C</div>
+                <div class="donor-info">
+                    <div class="donor-name">Carlos E.</div>
+                    <div class="donor-time">há 5 horas</div>
+                </div>
+                <div class="donor-amount">R$ 100</div>
+            </div>
+            <div class="donor">
+                <div class="donor-avatar">A</div>
+                <div class="donor-info">
+                    <div class="donor-name">Ana P.</div>
+                    <div class="donor-time">há 8 horas</div>
+                </div>
+                <div class="donor-amount">R$ 25</div>
+            </div>
+            <div class="donor">
+                <div class="donor-avatar">R</div>
+                <div class="donor-info">
+                    <div class="donor-name">Roberto L.</div>
+                    <div class="donor-time">há 1 dia</div>
+                </div>
+                <div class="donor-amount">R$ 250</div>
+            </div>
+            <div class="donor">
+                <div class="donor-avatar">F</div>
+                <div class="donor-info">
+                    <div class="donor-name">Fernanda M.</div>
+                    <div class="donor-time">há 1 dia</div>
+                </div>
+                <div class="donor-amount">R$ 50</div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>Refúgio Esperança • CNPJ 12.345.678/0001-90 • São Paulo, SP</p>
+            <p style="margin-top:8px;">Dúvidas? <a href="mailto:contato@refugioesperanca.org.br">contato@refugioesperanca.org.br</a></p>
+            <p style="margin-top:8px;">© 2026 Refúgio Esperança. Todos os direitos reservados.</p>
+        </div>
+    </div>
+    
+    <!-- Toast -->
+    <div class="toast" id="toast">Código Pix copiado! ✓</div>
+    
+    <script>
+        // Chave Pix do destino (carteira que recebe)
+        // Substituir pela chave real quando tiver
+        const PIX_KEY = "refugioesperanca@pix.org.br";
+        const PIX_NAME = "REFUGIO ESPERANCA";
+        const PIX_CITY = "SAO PAULO";
+        
+        let selectedAmount = 25;
+        
+        function selectAmount(val) {
+            selectedAmount = val;
+            document.querySelectorAll('.pix-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('customAmount').value = '';
+            generatePixCode();
+        }
+        
+        function customInput(val) {
+            if (val && parseInt(val) > 0) {
+                selectedAmount = parseInt(val);
+                document.querySelectorAll('.pix-btn').forEach(b => b.classList.remove('active'));
+                generatePixCode();
+            }
+        }
+        
+        function generatePixCode() {
+            // Formato BR Code (EMV) do Pix
+            const amount = selectedAmount.toFixed(2);
+            
+            // Payload format:
+            // 00 02 01 (payload format indicator)
+            // 01 02 br.gov.bcb.pix (merchant account info)
+            // 26 [len] br.gov.bcb.pix:0002[payee]... (additional data)
+            
+            const merchantInfo = "0014br.gov.bcb.pix25" + String(PIX_KEY.length).padStart(2,'0') + PIX_KEY;
+            const txAmount = "05" + String(amount.length).padStart(2,'0') + amount;
+            const country = "5204BR";
+            const merchantName = "53" + String(2).toString() + "03986"; // currency BRL
+            const merchantCity = "58" + String(PIX_CITY.length).padStart(2,'0') + PIX_CITY;
+            
+            // Simplified BR Code
+            const payload = "000201" + 
+                           "0112br.gov.bcb" + 
+                           "26" + String(PIX_KEY.length + 20).padStart(2,'0') + "br.gov.bcb.pix0014" + 
+                           String(PIX_KEY.length).padStart(2,'0') + PIX_KEY +
+                           "52040000" +
+                           "5303986" +
+                           "54" + String(amount.length).padStart(2,'0') + amount +
+                           "5802BR" +
+                           "59" + String(PIX_NAME.length).padStart(2,'0') + PIX_NAME +
+                           "60" + String(PIX_CITY.length).padStart(2,'0') + PIX_CITY +
+                           "62" + String(3).toString().padStart(2,'0') + "05" + String(3).toString() + "///" +
+                           "6304";
+            
+            // CRC16
+            const crc = crc16(payload);
+            const fullCode = payload + crc;
+            
+            document.getElementById('pixCode').textContent = fullCode;
+            document.getElementById('pixCode').classList.add('show');
+            document.getElementById('qrSection').classList.add('show');
+        }
+        
+        function crc16(str) {
+            let crc = 0xFFFF;
+            for (let i = 0; i < str.length; i++) {
+                crc ^= (str.charCodeAt(i)) << 8;
+                for (let j = 0; j < 8; j++) {
+                    crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) : (crc << 1);
+                    crc &= 0xFFFF;
+                }
+            }
+            return crc.toString(16).toUpperCase().padStart(4, '0');
+        }
+        
+        function copyPix() {
+            const code = document.getElementById('pixCode').textContent;
+            if (!code) {
+                generatePixCode();
+            }
+            navigator.clipboard.writeText(document.getElementById('pixCode').textContent).then(() => {
+                showToast();
+            }).catch(() => {
+                // Fallback
+                const ta = document.createElement('textarea');
+                ta.value = document.getElementById('pixCode').textContent;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast();
+            });
+        }
+        
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+        
+        // Gerar código inicial
+        generatePixCode();
+    </script>
+</body>
+</html>
